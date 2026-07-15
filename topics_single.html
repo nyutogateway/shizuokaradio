@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>お知らせ - SHIZUOKA OCEANS RADIO（クローン）</title>
+<title>お知らせ - SHIZUOKA OCEANS RADIO</title>
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -210,7 +210,7 @@ $(window).on("scroll", function(){
   var prev = ARTICLES[(i - 1 + ARTICLES.length) % ARTICLES.length];
   var next = ARTICLES[(i + 1) % ARTICLES.length];
 
-  document.title = a.title + " - お知らせ - SHIZUOKA OCEANS RADIO（クローン）";
+  document.title = a.title + " - お知らせ - SHIZUOKA OCEANS RADIO";
   q('ts-crumb').textContent = a.title;
   q('ts-cat').innerHTML   = '<li>' + esc(a.cat) + '</li>';
   q('ts-date').textContent = a.date;
