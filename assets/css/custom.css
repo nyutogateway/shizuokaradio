@@ -42,8 +42,6 @@ a{ color:var(--blue); }
 .home-slider-nav__count{ display:flex; align-items:center; justify-content:center; gap:14px; }
 .home-slider-nav__count:before{ display:none; }               /* 旧・中央の横線を無効化 */
 .home-slider-nav__count span{ display:inline-block; }         /* 縦積みを解除 */
-.home-slider-nav__count .nowcnt,
-.home-slider-nav__count .allcnt{ font-size:18px; font-weight:700; line-height:1; }
 .home-slider-nav__count .bar{ width:60px; height:1px; background:#000; }
 .home-slider-nav .slider-nav--prev{ left:0; }
 .home-slider-nav .slider-nav--next{ right:0; }

@@ -27,7 +27,7 @@
   <div class="container-fluid">
     <div class="d-flex justify-content-center align-items-start">
       <ul class="menu menu--left list-style-none mb-0 d-flex align-items-center justify-content-end">
-        <li><a href="topics.html"><span>TOPICS</span>トピックス</a></li>
+        <li><a href="topics.html"><span>NEWS</span>お知らせ</a></li>
         <li><a href="program_list.html"><span>PROGRAM</span>番組一覧</a></li>
       </ul>
       <a href="#" id="header-pc-logo">
@@ -46,7 +46,7 @@
   <div class="container-fluid">
     <div class="d-flex justify-content-center align-items-center">
       <ul class="menu menu--left list-style-none mb-0 d-flex align-items-center justify-content-end">
-        <li><a href="topics.html"><span>TOPICS</span>トピックス</a></li>
+        <li><a href="topics.html"><span>NEWS</span>お知らせ</a></li>
         <li><a href="program_list.html"><span>PROGRAM</span>番組一覧</a></li>
       </ul>
       <a href="#" id="header-sticky-logo">
@@ -77,7 +77,7 @@
   <div id="header-sp-menu__inner">
     <ul id="header-sp-menu-menu" class="list-style-none text-center mb-5">
       <li><a href="#"><span>TOP</span>トップ</a></li>
-      <li><a href="topics.html"><span>TOPICS</span>トピックス</a></li>
+      <li><a href="topics.html"><span>NEWS</span>お知らせ</a></li>
       <li><a href="program_list.html"><span>PROGRAM</span>番組一覧</a></li>
       <li><a href="personality_list.html"><span>PERSONALITY</span>パーソナリティー</a></li>
       <li><a href="request.html"><span>REQUEST</span>リクエスト</a></li>
@@ -153,7 +153,7 @@
     </div>
     <div class="home-slider-nav d-flex align-items-center justify-content-center mt-5">
       <div class="arrows"></div>
-      <div class="home-slider-nav__count"><span class="nowcnt">1</span><span class="bar"></span><span class="allcnt">14</span></div>
+      <div class="home-slider-nav__count"><span class="bar"></span></div>
     </div>
     <div class="text-center mt-5"><a href="program_list.html" class="btn">番組一覧はこちら</a></div>
   </div>
@@ -178,7 +178,7 @@
     </div>
     <div class="home-slider-nav d-flex align-items-center justify-content-center mt-5">
       <div class="arrows"></div>
-      <div class="home-slider-nav__count"><span class="nowcnt">1</span><span class="bar"></span><span class="allcnt">11</span></div>
+      <div class="home-slider-nav__count"><span class="bar"></span></div>
     </div>
     <div class="text-center mt-5"><a href="personality_list.html" class="btn">パーソナリティー一覧はこちら</a></div>
   </div>
@@ -194,7 +194,7 @@
     </a>
     <p class="mb-4">鹿児島シティエフエム<br>〒890-0082 鹿児島市紫原6-17-3<br>TEL：099-214-3777 / FAX：099-214-3567</p>
     <ul id="footer-menu" class="list-style-none d-flex flex-wrap justify-content-center mb-4">
-      <li><a href="topics.html">トピックス</a></li>
+      <li><a href="topics.html">お知らせ</a></li>
       <li><a href="program_list.html">番組一覧</a></li>
       <li><a href="personality_list.html">パーソナリティー</a></li>
       <li><a href="request.html">リクエスト</a></li>
@@ -230,10 +230,6 @@ $(window).on("scroll", function(){
 });
 
 /* Program slider (元 custom.js の設定を踏襲) */
-$('#home-program').on('init reInit afterChange', function(e,slick,cur){
-  $('#home-program .home-slider-nav__count .nowcnt').text((cur?cur:0)+1);
-  $('#home-program .home-slider-nav__count .allcnt').text(slick.slideCount);
-});
 $('#home-program-slider').slick({
   infinite:true, slidesToShow:3, slidesToScroll:1, autoplay:true, autoplaySpeed:4000, pauseOnHover:true, dots:false,
   prevArrow:'<div class="slider-nav slider-nav--prev"><i class="fa-solid fa-arrow-left-long"></i></div>',
@@ -243,10 +239,6 @@ $('#home-program-slider').slick({
 });
 
 /* Personality slider */
-$('#home-personality').on('init reInit afterChange', function(e,slick,cur){
-  $('#home-personality .home-slider-nav__count .nowcnt').text((cur?cur:0)+1);
-  $('#home-personality .home-slider-nav__count .allcnt').text(slick.slideCount);
-});
 $('#home-personality-slider').slick({
   infinite:true, slidesToShow:4, slidesToScroll:1, autoplay:true, autoplaySpeed:4000, pauseOnHover:true, dots:false,
   prevArrow:'<div class="slider-nav slider-nav--prev"><i class="fa-solid fa-arrow-left-long"></i></div>',
