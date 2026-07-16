@@ -32,10 +32,10 @@ $name = get_bloginfo( 'name' );
     } else {
     	?>
     	<ul id="footer-menu" class="list-style-none d-flex flex-wrap justify-content-center mb-4">
-    	  <li><a href="<?php echo esc_url( home_url( '/news/' ) ); ?>">お知らせ</a></li>
-    	  <li><a href="<?php echo esc_url( get_post_type_archive_link( 'program' ) ); ?>">番組一覧</a></li>
-    	  <li><a href="<?php echo esc_url( get_post_type_archive_link( 'personality' ) ); ?>">パーソナリティー</a></li>
-    	  <li><a href="<?php echo esc_url( home_url( '/request/' ) ); ?>">リクエスト</a></li>
+    	  <li><a href="<?php echo esc_url( sor_list_url( 'post' ) ); ?>">お知らせ</a></li>
+    	  <li><a href="<?php echo esc_url( sor_list_url( 'program' ) ); ?>">番組一覧</a></li>
+    	  <li><a href="<?php echo esc_url( sor_list_url( 'personality' ) ); ?>">パーソナリティー</a></li>
+    	  <li><a href="<?php echo esc_url( sor_page_url( 'request' ) ); ?>">リクエスト</a></li>
     	</ul>
     	<?php
     }
@@ -51,9 +51,9 @@ $name = get_bloginfo( 'name' );
     } else {
     	?>
     	<ul id="footer-menu-sm" class="list-style-none d-flex flex-wrap justify-content-center mb-4">
-    	  <li><a href="<?php echo esc_url( home_url( '/company/' ) ); ?>">会社概要</a></li>
+    	  <li><a href="<?php echo esc_url( sor_page_url( 'company', 'page-templates/template-company.php' ) ); ?>">会社概要</a></li>
     	  <li><a href="#">広告料金表</a></li>
-    	  <li><a href="<?php echo esc_url( home_url( '/privacypolicy/' ) ); ?>">プライバシーポリシー</a></li>
+    	  <li><a href="<?php echo esc_url( sor_privacy_url() ); ?>">プライバシーポリシー</a></li>
     	</ul>
     	<?php
     }

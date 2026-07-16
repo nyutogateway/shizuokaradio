@@ -28,9 +28,10 @@ function sor_setup() {
 	add_image_size( 'sor-hero', 800, 480, true );      // 記事詳細のヒーロー
 
 	register_nav_menus( array(
-		'primary'      => __( 'ヘッダー（左右のメインナビ）', 'sor' ),
-		'footer'       => __( 'フッター（主要メニュー）', 'sor' ),
-		'footer_small' => __( 'フッター（小メニュー）', 'sor' ),
+		'primary_left'  => __( 'ヘッダー左（ロゴの左側）', 'sor' ),
+		'primary_right' => __( 'ヘッダー右（ロゴの右側）', 'sor' ),
+		'footer'        => __( 'フッター（主要メニュー）', 'sor' ),
+		'footer_small'  => __( 'フッター（小メニュー）', 'sor' ),
 	) );
 }
 add_action( 'after_setup_theme', 'sor_setup' );
@@ -68,7 +69,9 @@ function sor_post_types() {
 			'singular_name' => __( 'パーソナリティー', 'sor' ),
 		),
 		'public'        => true,
-		'has_archive'   => true,
+		// 一覧は固定ページ（/personality/）に一本化するため、アーカイブは無効。
+		// 有効だと /personality/ をアーカイブが先取りし、固定ページに到達できなくなる。
+		'has_archive'   => false,
 		'menu_icon'     => 'dashicons-microphone',
 		'rewrite'       => array( 'slug' => 'personality' ),
 		'supports'      => array( 'title', 'editor', 'thumbnail', 'excerpt', 'page-attributes' ),
@@ -81,7 +84,8 @@ function sor_post_types() {
 			'singular_name' => __( '番組', 'sor' ),
 		),
 		'public'        => true,
-		'has_archive'   => true,
+		// 同上。一覧は固定ページ（/program/）を使う。
+		'has_archive'   => false,
 		'menu_icon'     => 'dashicons-format-audio',
 		'rewrite'       => array( 'slug' => 'program' ),
 		'supports'      => array( 'title', 'editor', 'thumbnail', 'excerpt', 'page-attributes' ),
@@ -242,6 +246,122 @@ function sor_header_label() {
 }
 
 /**
+ * 固定ページの URL を返す
+ *
+ * スラッグで見つからないとき（日本語スラッグのままにしている等）は
+ * $template を割り当てたページを探す。それも無ければ /$slug/ をそのまま返す。
+ */
+function sor_page_url( $slug, $template = '' ) {
+	$page = get_page_by_path( $slug );
+
+	if ( ! $page && $template ) {
+		$found = get_pages( array(
+			'meta_key'   => '_wp_page_template',
+			'meta_value' => $template,
+			'number'     => 1,
+		) );
+		if ( $found ) {
+			$page = $found[0];
+		}
+	}
+
+	return $page ? get_permalink( $page ) : home_url( '/' . $slug . '/' );
+}
+
+/**
+ * 投稿タイプの「一覧ページ」URL
+ *
+ * CPT のアーカイブは無効化し、一覧は固定ページに一本化している。
+ * get_post_type_archive_link() は has_archive => false だと false を返すので、
+ * 一覧へ戻るリンクは全てこの関数を通すこと。
+ */
+function sor_list_url( $post_type ) {
+	// お知らせは「設定→表示設定→投稿ページ」の指定を優先する
+	if ( 'post' === $post_type ) {
+		$posts_page = get_option( 'page_for_posts' );
+		return $posts_page ? get_permalink( $posts_page ) : sor_page_url( 'news' );
+	}
+	return sor_page_url( $post_type );
+}
+
+/**
+ * プライバシーポリシーページの URL
+ *
+ * 「設定→プライバシー」で指定されていればそれを最優先する。
+ * WP 標準機能で作るとスラッグが privacy-policy（ハイフン入り）になり、
+ * 静的HTML由来の privacypolicy と食い違うため。
+ */
+function sor_privacy_url() {
+	$url = get_privacy_policy_url();
+	return $url ? $url : sor_page_url( 'privacypolicy' );
+}
+
+/**
+ * ヘッダーナビ用ウォーカー
+ *
+ * 静的HTMLの <a><span>NEWS</span>お知らせ</a> という構造を再現する。
+ * 英字ラベルはメニュー項目の「説明」欄に入れる（外観→メニューの
+ * 「表示オプション」で説明欄を出す必要がある）。空なら英字なしで出力。
+ */
+class SOR_Nav_Walker extends Walker_Nav_Menu {
+
+	public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
+		$en = trim( (string) $item->description );
+
+		$output .= '<li><a href="' . esc_url( $item->url ) . '">';
+		if ( '' !== $en ) {
+			$output .= '<span>' . esc_html( $en ) . '</span>';
+		}
+		$output .= esc_html( $item->title ) . '</a>';
+	}
+
+	public function end_el( &$output, $item, $depth = 0, $args = null ) {
+		$output .= '</li>';
+	}
+}
+
+/**
+ * ヘッダーの左右ナビを出力する
+ *
+ * 外観→メニューで割り当てがあればそれを使い、無ければ静的HTMLと同じ既定項目を出す。
+ * <ul> はテンプレート側にあるので items_wrap で <li> だけを出力させる。
+ *
+ * @param string $side 'left' または 'right'
+ */
+function sor_nav( $side ) {
+	$location = 'primary_' . $side;
+
+	if ( has_nav_menu( $location ) ) {
+		wp_nav_menu( array(
+			'theme_location' => $location,
+			'container'      => false,
+			'items_wrap'     => '%3$s',
+			'depth'          => 1,
+			'walker'         => new SOR_Nav_Walker(),
+		) );
+		return;
+	}
+
+	$items = array(
+		'left'  => array(
+			array( 'NEWS', 'お知らせ', sor_list_url( 'post' ) ),
+			array( 'PROGRAM', '番組一覧', sor_list_url( 'program' ) ),
+		),
+		'right' => array(
+			array( 'PERSONALITY', 'パーソナリティー', sor_list_url( 'personality' ) ),
+			array( 'REQUEST', 'リクエスト', sor_page_url( 'request' ) ),
+		),
+	);
+
+	foreach ( $items[ $side ] as $it ) {
+		printf(
+			'<li><a href="%s"><span>%s</span>%s</a></li>',
+			esc_url( $it[2] ), esc_html( $it[0] ), esc_html( $it[1] )
+		);
+	}
+}
+
+/**
  * カードのサムネイル出力（アイキャッチが無ければプレースホルダー）
  * 静的HTMLと同じ見た目を保つため
  */
@@ -257,3 +377,54 @@ function sor_thumbnail( $size = 'sor-card', $alt = '' ) {
 		$w, $h, esc_attr( $alt ? $alt : get_the_title() )
 	);
 }
+
+/**
+ * Contact Form 7：リクエストフォームの「番組を選択」を番組CPTから動的に生成する
+ *
+ * CF7側は選択肢を空にした [select program] を置くだけでよい。
+ * 番組が増減しても、フォーム定義を編集する必要がなくなる。
+ */
+function sor_cf7_program_options( $tag ) {
+	if ( empty( $tag['name'] ) || 'program' !== $tag['name'] ) {
+		return $tag;
+	}
+	$programs = get_posts( array(
+		'post_type'   => 'program',
+		'numberposts' => 100,
+		'orderby'     => 'title',
+		'order'       => 'ASC',
+	) );
+	if ( ! $programs ) {
+		return $tag;
+	}
+	foreach ( $programs as $p ) {
+		$tag['raw_values'][] = $p->post_title;
+		$tag['values'][]     = $p->post_title;
+		$tag['labels'][]     = $p->post_title;
+	}
+	$tag['raw_values'][] = 'その他';
+	$tag['values'][]     = 'その他';
+	$tag['labels'][]     = 'その他';
+
+	return $tag;
+}
+add_filter( 'wpcf7_form_tag', 'sor_cf7_program_options', 10, 1 );
+
+/**
+ * Contact Form 7 が入っていない場合に、リクエストのページ本文へ貼るショートコードを
+ * 管理画面で案内する（テンプレート側のダミー表示と対になる注意喚起）
+ */
+function sor_cf7_admin_notice() {
+	if ( ! current_user_can( 'activate_plugins' ) ) {
+		return;
+	}
+	if ( defined( 'WPCF7_VERSION' ) ) {
+		return;
+	}
+	$screen = get_current_screen();
+	if ( ! $screen || 'themes' !== $screen->id ) {
+		return;
+	}
+	echo '<div class="notice notice-warning"><p><strong>SHIZUOKA OCEANS RADIO テーマ</strong>：リクエストフォームは Contact Form 7 を前提にしています。未導入のため、リクエストページは送信できないダミー表示になります。</p></div>';
+}
+add_action( 'admin_notices', 'sor_cf7_admin_notice' );

@@ -20,28 +20,7 @@
 <?php
 $sor_logo = get_template_directory_uri() . '/assets/img/home/SHIZUOKA-OCEANS-RADIO-1a-dark.svg';
 $sor_name = get_bloginfo( 'name' );
-
-/**
- * 左右のナビ。登録メニューがあればそれを使い、無ければ静的HTMLと同じ既定項目を出す
- */
-function sor_nav( $side ) {
-	$items = array(
-		'left'  => array(
-			array( 'NEWS', 'お知らせ', home_url( '/news/' ) ),
-			array( 'PROGRAM', '番組一覧', get_post_type_archive_link( 'program' ) ),
-		),
-		'right' => array(
-			array( 'PERSONALITY', 'パーソナリティー', get_post_type_archive_link( 'personality' ) ),
-			array( 'REQUEST', 'リクエスト', home_url( '/request/' ) ),
-		),
-	);
-	foreach ( $items[ $side ] as $it ) {
-		printf(
-			'<li><a href="%s"><span>%s</span>%s</a></li>',
-			esc_url( $it[2] ), esc_html( $it[0] ), esc_html( $it[1] )
-		);
-	}
-}
+// 左右ナビの出力は functions.php の sor_nav() を参照
 ?>
 
 <!-- ===================== HEADER: PC ===================== -->

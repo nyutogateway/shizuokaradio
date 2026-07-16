@@ -25,7 +25,7 @@ $uri = get_template_directory_uri();
     <?php if ( is_singular( array( 'post', 'personality', 'program' ) ) ) : ?>
       <?php
       $pt   = get_post_type();
-      $link = ( 'post' === $pt ) ? home_url( '/news/' ) : get_post_type_archive_link( $pt );
+      $link = sor_list_url( $pt );
       ?>
       <a href="<?php echo esc_url( $link ); ?>"><?php echo esc_html( $ja ); ?></a> /
       <span class="current-item"><?php the_title(); ?></span>

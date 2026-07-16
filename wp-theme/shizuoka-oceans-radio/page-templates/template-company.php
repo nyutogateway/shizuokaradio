@@ -45,7 +45,10 @@ get_header(); ?>
           <?php endif; ?>
         </div>
         <div class="col-lg-9">
-          <?php echo wp_kses_post( $content ); ?>
+          <?php
+          // the_content フィルター適用済み。wp_kses_post は地図の iframe を落とすので通さない
+          echo $content; // phpcs:ignore WordPress.Security.EscapingOutput.OutputNotEscaped
+          ?>
         </div>
         <?php endwhile; ?>
       </div>

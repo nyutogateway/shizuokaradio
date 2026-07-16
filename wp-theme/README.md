@@ -28,8 +28,71 @@ wp-theme/shizuoka-oceans-radio/  →  wp-content/themes/ へコピー
 |---|---|---|
 | **会社概要（左メニュー付き）** | 会社概要・広告料金表など | 左に追従MENU（`col-lg-3`）＋右に本文（`col-lg-9`） |
 | **1カラム（幅せまめ・規約/フォーム向け）** | プライバシーポリシー、リクエスト | 本文幅を `col-lg-8` に絞って読みやすく |
+| **リクエストフォーム** | リクエスト | Contact Form 7 前提。番組の選択肢はCPTから自動生成 |
 | **1カラム（全幅）** | ブロックエディタで自由に組む用 | `container` 全幅 |
 | （未選択＝既定） | その他 | `page.php`＝幅せまめと同じ |
+
+### 「リクエストフォーム」テンプレートの使い方
+
+**Contact Form 7 が必要です。** 元テーマのCSSがCF7の出力するclass（`.wpcf7-list-item` / `.wpcf7-spinner`）に
+当てて書かれているため、CF7を使うと既存のデザインがそのまま効きます。
+
+未導入の場合、リクエストページは**送信できないダミー表示**になります
+（編集権限のある人にだけ、その旨の注意書きが出ます）。
+
+**手順**
+
+1. Contact Form 7 を有効化
+2. 「お問い合わせ > 新規追加」で下記のフォーム定義を貼り付けて保存
+3. 固定ページ「リクエスト」を作成 → テンプレートに **リクエストフォーム** を選択
+4. 本文に発行されたショートコード `[contact-form-7 id="..." title="..."]` を貼る
+
+**フォーム定義（フォームタブに貼る）**
+
+```
+<p class="mb-4">お好きな楽曲のリクエスト・メッセージをお送りください。番組内でご紹介します。</p>
+
+<div class="form-group">
+  <label class="label">ラジオネーム<span class="label__required">必須</span></label>
+  [text* radio-name class:form-control class:mt-3 placeholder "ラジオネーム"]
+</div>
+
+<div class="form-group">
+  <label class="label">曲名<span class="label__required">必須</span></label>
+  [text* song class:form-control class:mt-3 placeholder "曲名"]
+</div>
+
+<div class="form-group">
+  <label class="label">アーティスト名<span class="label__required">必須</span></label>
+  [text* artist class:form-control class:mt-3 placeholder "アーティスト名"]
+</div>
+
+<div class="form-group">
+  <label class="label">番組を選択<span class="label__required">必須</span></label>
+  [select* program class:form-select class:mt-3]
+</div>
+
+<div class="form-group">
+  <label class="label">メッセージ</label>
+  [textarea message class:form-control class:mt-3 rows:6 placeholder "メッセージ・エピソードなど"]
+</div>
+
+<div id="request-sc1-privacy" class="py-4">
+  [acceptance privacy-agree] <a href="/privacypolicy/">プライバシーポリシー</a>に同意する [/acceptance]
+</div>
+
+<div id="request-sc1-btn" class="pt-4 text-center">
+  [submit class:btn "送信する"]
+</div>
+```
+
+**番組の選択肢は書かなくてよい**：`[select* program]` は選択肢を空にしておけば、
+`functions.php` の `sor_cf7_program_options()` が**番組CPTから自動で生成**します。
+番組が増減してもフォーム定義を編集する必要はありません。
+
+**注意**：静的HTMLのボタンは「確認画面へ」ですが、**CF7に確認画面はありません**（送信のみ）。
+確認画面が必要な場合は、別プラグイン（Contact Form 7 Multi-Step Forms 等）の導入か、
+フォームプラグイン自体の変更をご検討ください。
 
 ### 「会社概要」テンプレートの使い方
 

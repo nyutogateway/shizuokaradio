@@ -6,7 +6,7 @@
 $prev = get_previous_post();
 $next = get_next_post();
 $pt   = get_post_type();
-$archive = ( 'post' === $pt ) ? home_url( '/news/' ) : get_post_type_archive_link( $pt );
+$archive = sor_list_url( $pt );
 $size = ( 'personality' === $pt ) ? 'sor-square' : 'sor-card';
 if ( ! $prev && ! $next ) { return; }
 ?>
