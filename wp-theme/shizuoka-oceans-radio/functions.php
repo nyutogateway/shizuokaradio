@@ -147,6 +147,23 @@ add_action( 'wp_head', 'sor_seo_meta', 1 );
  * ページごとの description を組み立てる
  */
 function sor_meta_description() {
+	$name = get_bloginfo( 'name' );
+
+	// 一覧の固定ページは「選ばれているテンプレート」で判定する。
+	// CPTは has_archive=false のため is_post_type_archive() は使えない。
+	if ( is_page() ) {
+		$by_template = array(
+			'page-templates/template-news.php'        => $name . 'からのお知らせ一覧。イベント・番組改編など最新情報をお届けします。',
+			'page-templates/template-personality.php' => $name . 'に出演するパーソナリティー一覧。担当番組やプロフィールをご紹介します。',
+			'page-templates/template-program.php'     => $name . 'の番組一覧。曜日・時間帯ごとの放送番組と出演パーソナリティーをご紹介します。',
+			'page-templates/template-request.php'     => $name . 'へのリクエスト・メッセージ送信フォーム。お好きな楽曲のリクエストを番組内でご紹介します。',
+		);
+		$template = get_page_template_slug();
+		if ( isset( $by_template[ $template ] ) ) {
+			return $by_template[ $template ];
+		}
+	}
+
 	if ( is_singular() ) {
 		$excerpt = get_the_excerpt();
 		if ( $excerpt ) {
@@ -154,17 +171,12 @@ function sor_meta_description() {
 		}
 		return wp_trim_words( wp_strip_all_tags( get_the_content() ), 60, '…' );
 	}
-	if ( is_post_type_archive( 'personality' ) ) {
-		return get_bloginfo( 'name' ) . 'に出演するパーソナリティー一覧。担当番組やプロフィールをご紹介します。';
-	}
-	if ( is_post_type_archive( 'program' ) ) {
-		return get_bloginfo( 'name' ) . 'の番組一覧。曜日・時間帯ごとの放送番組と出演パーソナリティーをご紹介します。';
-	}
 	if ( is_home() || is_category() || is_archive() ) {
-		return get_bloginfo( 'name' ) . 'からのお知らせ一覧。イベント・番組改編など最新情報をお届けします。';
+		return $name . 'からのお知らせ一覧。イベント・番組改編など最新情報をお届けします。';
 	}
+
 	$desc = get_bloginfo( 'description' );
-	return $desc ? $desc : get_bloginfo( 'name' ) . '（静岡のインターネットラジオ）公式サイト。';
+	return $desc ? $desc : $name . '（静岡のインターネットラジオ）公式サイト。';
 }
 
 /**
@@ -337,12 +349,25 @@ function sor_page_url( $slug, $template = '' ) {
  * 一覧へ戻るリンクは全てこの関数を通すこと。
  */
 function sor_list_url( $post_type ) {
-	// お知らせは「設定→表示設定→投稿ページ」の指定を優先する
+	// 一覧の固定ページは、スラッグが違っても「選ばれているテンプレート」から探せるようにする。
+	// テンプレートを渡さないと、スラッグ不一致のときに存在しないURLへリンクして404になる。
+	$templates = array(
+		'post'        => 'page-templates/template-news.php',
+		'personality' => 'page-templates/template-personality.php',
+		'program'     => 'page-templates/template-program.php',
+	);
+	$template = isset( $templates[ $post_type ] ) ? $templates[ $post_type ] : '';
+
+	// お知らせは「設定→表示設定→投稿ページ」の指定があればそちらを優先する
 	if ( 'post' === $post_type ) {
 		$posts_page = get_option( 'page_for_posts' );
-		return $posts_page ? get_permalink( $posts_page ) : sor_page_url( 'news' );
+		if ( $posts_page ) {
+			return get_permalink( $posts_page );
+		}
+		return sor_page_url( 'news', $template );
 	}
-	return sor_page_url( $post_type );
+
+	return sor_page_url( $post_type, $template );
 }
 
 /**
@@ -410,7 +435,7 @@ function sor_nav( $side ) {
 		),
 		'right' => array(
 			array( 'PERSONALITY', 'パーソナリティー', sor_list_url( 'personality' ) ),
-			array( 'REQUEST', 'リクエスト', sor_page_url( 'request' ) ),
+			array( 'REQUEST', 'リクエスト', sor_page_url( 'request', 'page-templates/template-request.php' ) ),
 		),
 	);
 

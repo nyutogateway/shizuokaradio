@@ -52,7 +52,7 @@ $uri = get_template_directory_uri();
       	<p class="f-14"><?php esc_html_e( 'お知らせはまだありません。', 'sor' ); ?></p>
       <?php endif; ?>
     </div>
-    <div class="text-center mt-5"><a href="<?php echo esc_url( home_url( '/news/' ) ); ?>" class="btn">お知らせ一覧はこちら</a></div>
+    <div class="text-center mt-5"><a href="<?php echo esc_url( sor_list_url( 'post' ) ); ?>" class="btn">お知らせ一覧はこちら</a></div>
   </div>
 </section>
 

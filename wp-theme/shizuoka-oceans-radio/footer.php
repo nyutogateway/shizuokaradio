@@ -35,7 +35,7 @@ $name = get_bloginfo( 'name' );
     	  <li><a href="<?php echo esc_url( sor_list_url( 'post' ) ); ?>">お知らせ</a></li>
     	  <li><a href="<?php echo esc_url( sor_list_url( 'program' ) ); ?>">番組一覧</a></li>
     	  <li><a href="<?php echo esc_url( sor_list_url( 'personality' ) ); ?>">パーソナリティー</a></li>
-    	  <li><a href="<?php echo esc_url( sor_page_url( 'request' ) ); ?>">リクエスト</a></li>
+    	  <li><a href="<?php echo esc_url( sor_page_url( 'request', 'page-templates/template-request.php' ) ); ?>">リクエスト</a></li>
     	</ul>
     	<?php
     }
