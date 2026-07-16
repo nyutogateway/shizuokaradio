@@ -230,20 +230,81 @@ function sor_current_title() {
  * ページヘッダー（アクアの帯）の英字ラベルを返す
  */
 function sor_header_label() {
-	if ( is_home() || is_singular( 'post' ) || is_category() ) {
+	// 個別ページ（投稿タイプで判定）
+	if ( is_home() || is_singular( 'post' ) || is_category() || is_date() || is_tag() ) {
 		return array( 'NEWS', 'お知らせ' );
 	}
-	if ( is_post_type_archive( 'personality' ) || is_singular( 'personality' ) ) {
+	if ( is_singular( 'personality' ) ) {
 		return array( 'PERSONALITY', 'パーソナリティー' );
 	}
-	if ( is_post_type_archive( 'program' ) || is_singular( 'program' ) ) {
+	if ( is_singular( 'program' ) || is_tax( 'program_day' ) ) {
 		return array( 'PROGRAM', '番組一覧' );
 	}
+
+	// 固定ページは「選ばれているテンプレート」で判定する。
+	// CPTは has_archive=false（一覧を固定ページに寄せた）ため
+	// is_post_type_archive() は永久に false になり、判定に使えない。
 	if ( is_page() ) {
-		return array( 'PAGE', get_the_title() );
+		$by_template = array(
+			'page-templates/template-news.php'        => array( 'NEWS', 'お知らせ' ),
+			'page-templates/template-personality.php' => array( 'PERSONALITY', 'パーソナリティー' ),
+			'page-templates/template-program.php'     => array( 'PROGRAM', '番組一覧' ),
+			'page-templates/template-request.php'     => array( 'REQUEST', 'リクエスト' ),
+			'page-templates/template-company.php'     => array( 'COMPANY', '会社概要' ),
+		);
+		$template = get_page_template_slug();
+		if ( isset( $by_template[ $template ] ) ) {
+			return $by_template[ $template ];
+		}
+
+		// テンプレートで決まらないページは、編集画面で英字ラベルを指定できる。
+		// 未指定なら PAGE を出す。
+		$custom = get_post_meta( get_the_ID(), 'sor_header_en', true );
+		return array( $custom ? $custom : 'PAGE', get_the_title() );
 	}
+
 	return array( 'ARCHIVE', sor_current_title() );
 }
+
+/**
+ * 固定ページの英字ラベル入力欄
+ * （プライバシーポリシー等、専用テンプレートが無いページ用）
+ */
+function sor_page_label_metabox() {
+	add_meta_box(
+		'sor_page_label',
+		__( 'ページヘッダーの英字ラベル', 'sor' ),
+		function ( $post ) {
+			wp_nonce_field( 'sor_page_label_save', 'sor_page_label_nonce' );
+			printf(
+				'<input type="text" name="sor_header_en" value="%s" class="widefat" placeholder="POLICY"><p class="description">%s</p>',
+				esc_attr( get_post_meta( $post->ID, 'sor_header_en', true ) ),
+				esc_html__( 'ページ上部の帯に大きく出る英字。未入力だと PAGE と表示されます。専用テンプレート（リクエスト等）を選んでいる場合はそちらが優先されます。', 'sor' )
+			);
+		},
+		'page',
+		'side',
+		'default'
+	);
+}
+add_action( 'add_meta_boxes', 'sor_page_label_metabox' );
+
+function sor_page_label_save( $post_id ) {
+	if ( ! isset( $_POST['sor_page_label_nonce'] ) ||
+		! wp_verify_nonce( sanitize_key( $_POST['sor_page_label_nonce'] ), 'sor_page_label_save' ) ) {
+		return;
+	}
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+	if ( isset( $_POST['sor_header_en'] ) ) {
+		update_post_meta( $post_id, 'sor_header_en', sanitize_text_field( wp_unslash( $_POST['sor_header_en'] ) ) );
+	}
+}
+add_action( 'save_post_page', 'sor_page_label_save' );
 
 /**
  * 固定ページの URL を返す
