@@ -101,6 +101,49 @@ wp-theme/shizuoka-oceans-radio/  →  wp-content/themes/ へコピー
 `functions.php` の `sor_cf7_program_options()` が**番組CPTから自動で生成**します。
 番組が増減してもフォーム定義を編集する必要はありません。
 
+**メール設定（メールタブ）**
+
+CF7の初期値のままだと
+`Reply-To 項目に不正なメールボックス構文が見られます` というエラーが出ます。
+初期値の**追加ヘッダーに `Reply-To: [your-email]` が入っている**のに、
+このフォームには**メールアドレスの項目が無い**ためです。
+
+以下のように設定してください。
+
+| 項目 | 値 |
+|---|---|
+| 送信先 | 局のメールアドレス |
+| 送信元 | `[_site_title] <wordpress@example.com>`（※ドメインは実際のものに） |
+| 題名 | `[_site_title] リクエスト：[song] / [artist]` |
+| **追加ヘッダー** | **空にする**（`Reply-To: [your-email]` の行を削除） |
+
+メッセージ本文：
+
+```
+ラジオネーム: [radio-name]
+曲名: [song]
+アーティスト名: [artist]
+番組: [program]
+
+メッセージ:
+[message]
+
+--
+このメールは [_site_title] ([_site_url]) のリクエストフォームから送信されました。
+```
+
+**リスナーに返信したい場合**は、フォームにメール項目を追加してください。
+
+```
+<div class="form-group">
+  <label class="label">メールアドレス</label>
+  [email your-email class:form-control class:mt-3 placeholder "example@example.com"]
+</div>
+```
+
+この場合のみ、追加ヘッダーに `Reply-To: [your-email]` を残せます
+（任意項目にすると未入力時に同じエラーが出るため、その場合も追加ヘッダーは空が安全です）。
+
 **注意**：静的HTMLのボタンは「確認画面へ」ですが、**CF7に確認画面はありません**（送信のみ）。
 確認画面が必要な場合は、別プラグイン（Contact Form 7 Multi-Step Forms 等）の導入か、
 フォームプラグイン自体の変更をご検討ください。
