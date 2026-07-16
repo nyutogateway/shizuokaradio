@@ -1,9 +1,9 @@
 <?php
 /**
- * Template Name: 1カラム（幅せまめ・規約/フォーム向け）
+ * Template Name: 1カラム（幅せまめ・規約向け）
  * Template Post Type: page
  *
- * プライバシーポリシーやリクエストフォームなど、
+ * プライバシーポリシーや利用規約など、
  * 読みやすさ優先で本文幅を絞るページ用。
  *
  * @package sor
