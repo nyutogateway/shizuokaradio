@@ -437,6 +437,78 @@ function sor_personality_save( $post_id ) {
 add_action( 'save_post_personality', 'sor_personality_save' );
 
 /**
+ * 番組の追加項目（出演者・放送時間）の入力欄
+ *
+ * 出演者はテキスト自由入力にすると、パーソナリティー詳細の「担当番組」が
+ * 氏名の LIKE 一致で拾えなくなる（誤字・表記ゆれで一致しない）。
+ * そのためパーソナリティーCPTから選ぶチェックボックス方式にしている。
+ */
+function sor_program_metabox() {
+	add_meta_box(
+		'sor_program_fields',
+		__( '番組情報', 'sor' ),
+		'sor_program_metabox_html',
+		'program',
+		'normal',
+		'high'
+	);
+}
+add_action( 'add_meta_boxes', 'sor_program_metabox' );
+
+function sor_program_metabox_html( $post ) {
+	wp_nonce_field( 'sor_program_save', 'sor_program_nonce' );
+
+	$cast     = get_post_meta( $post->ID, 'sor_cast', true );
+	$selected = array_filter( array_map( 'trim', explode( '／', (string) $cast ) ) );
+	$people   = get_posts( sor_personality_query_args( array( 'numberposts' => 100 ) ) );
+
+	echo '<table class="form-table"><tr><th>' . esc_html__( '出演者', 'sor' ) . '</th><td>';
+	if ( $people ) {
+		foreach ( $people as $p ) {
+			printf(
+				'<label style="display:inline-block;margin:0 16px 8px 0"><input type="checkbox" name="sor_cast_ids[]" value="%1$s"%2$s> %1$s</label>',
+				esc_attr( $p->post_title ),
+				in_array( $p->post_title, $selected, true ) ? ' checked' : ''
+			);
+		}
+		echo '<p class="description">' . esc_html__( 'パーソナリティーから選びます。ここで選ぶと、その人の詳細ページの「担当番組」に自動で表示されます。', 'sor' ) . '</p>';
+	} else {
+		echo '<p class="description">' . esc_html__( '先に「パーソナリティー」を登録・公開してください。', 'sor' ) . '</p>';
+	}
+	echo '</td></tr>';
+
+	printf(
+		'<tr><th><label for="sor_time">%1$s</label></th><td><input type="text" id="sor_time" name="sor_time" value="%2$s" class="regular-text" placeholder="18:00"><p class="description">%3$s</p></td></tr>',
+		esc_html__( '放送時間', 'sor' ),
+		esc_attr( get_post_meta( $post->ID, 'sor_time', true ) ),
+		esc_html__( 'カードに曜日と並べて表示されます。放送曜日は右の「放送曜日」で設定してください。', 'sor' )
+	);
+	echo '</table>';
+}
+
+function sor_program_save( $post_id ) {
+	if ( ! isset( $_POST['sor_program_nonce'] ) ||
+		! wp_verify_nonce( sanitize_key( $_POST['sor_program_nonce'] ), 'sor_program_save' ) ) {
+		return;
+	}
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+
+	$ids = isset( $_POST['sor_cast_ids'] ) ? (array) wp_unslash( $_POST['sor_cast_ids'] ) : array();
+	$ids = array_map( 'sanitize_text_field', $ids );
+	update_post_meta( $post_id, 'sor_cast', implode( '／', $ids ) );
+
+	if ( isset( $_POST['sor_time'] ) ) {
+		update_post_meta( $post_id, 'sor_time', sanitize_text_field( wp_unslash( $_POST['sor_time'] ) ) );
+	}
+}
+add_action( 'save_post_program', 'sor_program_save' );
+
+/**
  * パーソナリティーをふりがなの五十音順で取得する WP_Query 引数を返す
  *
  * タイトル順だと日本語は文字コード順になり、読みの順にならないため
