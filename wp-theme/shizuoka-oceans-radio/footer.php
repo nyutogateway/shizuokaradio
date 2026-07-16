@@ -18,7 +18,7 @@ $name = get_bloginfo( 'name' );
       <img src="<?php echo esc_url( $uri . '/assets/img/home/SHIZUOKA-OCEANS-RADIO-1a-dark.svg' ); ?>" alt="<?php echo esc_attr( $name ); ?>">
     </a>
 
-    <p class="mb-4"><?php echo wp_kses_post( get_theme_mod( 'sor_address', $name . '<br>〒420-0000 静岡県静岡市○○ 0-0-0<br>TEL：000-000-0000' ) ); ?></p>
+    <p class="mb-4"><?php echo wp_kses_post( get_theme_mod( 'sor_address', $name . '<br>〒000-0000 ○○県○○市○○ 0-0-0<br>TEL：000-000-0000 / FAX：000-000-0000' ) ); ?></p>
 
     <?php
     if ( has_nav_menu( 'footer' ) ) {

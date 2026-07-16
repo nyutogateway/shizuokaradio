@@ -191,7 +191,7 @@ a:hover{ color:#0e7d81; }
   .post-single-nav .wrap__thumb__img{ width:80px; }
 }
 
-/* ===== 固定ステッカー：J-WAVE → Spotify =====
+/* ===== 固定ステッカー：Spotify =====
    IDを footer-jwave から変更したため、元テーマの固定位置指定を引き継いで再定義 */
 /* 固定ボタン：Spotify は横長ピル、今すぐ聴くは円形。縦2段で重ならないよう配置。
    円形時より縦を取らないため、下端から詰めて置ける */
