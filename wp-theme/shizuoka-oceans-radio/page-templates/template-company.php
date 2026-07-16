@@ -19,15 +19,26 @@ get_header(); ?>
         while ( have_posts() ) : the_post();
           $content = apply_filters( 'the_content', get_the_content() );
 
-          // 本文の H2 を拾って id を振り、左メニューの項目にする
+          // 本文の H2 を拾って id を振り、左メニューの項目にする。
+          // ・s フラグ必須：見出しに改行が含まれると (.*?) が跨げず、その見出しを取りこぼす
+          // ・既に id があれば（ブロックエディタのHTMLアンカー）それを使う。
+          //   無条件に付けると id が重複し、ブラウザが先頭を採用してリンク先がずれる
           $nav = array();
           $content = preg_replace_callback(
-            '/<h2([^>]*)>(.*?)<\/h2>/i',
+            '/<h2([^>]*)>(.*?)<\/h2>/is',
             function ( $m ) use ( &$nav ) {
-              $text = wp_strip_all_tags( $m[2] );
-              $id   = 'sec-' . ( count( $nav ) + 1 );
+              $attrs = $m[1];
+              $text  = trim( wp_strip_all_tags( $m[2] ) );
+              if ( '' === $text ) {
+                return $m[0];
+              }
+              if ( preg_match( '/\bid=["\']([^"\']+)["\']/i', $attrs, $has_id ) ) {
+                $nav[] = array( 'id' => $has_id[1], 'text' => $text );
+                return $m[0];
+              }
+              $id = 'sec-' . ( count( $nav ) + 1 );
               $nav[] = array( 'id' => $id, 'text' => $text );
-              return '<h2 id="' . esc_attr( $id ) . '"' . $m[1] . '>' . $m[2] . '</h2>';
+              return '<h2 id="' . esc_attr( $id ) . '"' . $attrs . '>' . $m[2] . '</h2>';
             },
             $content
           );

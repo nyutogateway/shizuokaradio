@@ -215,6 +215,9 @@ a:hover{ color:#0e7d81; }
 /* パーソナリティーのふりがな（氏名の上に小さく添える） */
 .personality-post__kana{ font-size:12px; line-height:1.4; color:#0a2540; opacity:.65; }
 
+/* 会社概要の左MENUのアンカー先が、追従ヘッダー（約88px）の下に隠れるのを防ぐ */
+#company-info h2, .col-lg-9 h2{ scroll-margin-top:100px; }
+
 /* ----- フッター -----
    Bootstrapの .bg-black は !important 付きで自前指定に勝ってしまうため、
    HTMLから bg-black を外し #footer に直接指定（!important 合戦を避ける）。ヘッダーと同色 */
