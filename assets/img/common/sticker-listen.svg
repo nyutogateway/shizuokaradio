@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="190" height="190" viewBox="0 0 190 190">
+  <!-- 「今すぐ聴く」ボタン：レコード盤モチーフの円形。
+       白い本文でも濃紺フッターでも埋没しないようアクア地＋濃紺（7.2:1）。
+       文字は text-anchor=middle のため環境でフォント幅が変わっても中央からずれない -->
+  <circle cx="95" cy="95" r="88.5" fill="#35c4c8" stroke="#0a2540" stroke-width="3"/>
+
+  <!-- レコードの溝 -->
+  <g fill="none" stroke="#0a2540" stroke-opacity="0.22" stroke-width="1.2">
+    <circle cx="95" cy="95" r="80"/>
+    <circle cx="95" cy="95" r="74"/>
+    <circle cx="95" cy="95" r="68"/>
+    <circle cx="95" cy="95" r="62"/>
+  </g>
+
+  <!-- 中央ラベル＋再生マーク -->
+  <circle cx="95" cy="77" r="30" fill="#0a2540"/>
+  <path d="M87 64 L108 77 L87 90 Z" fill="#35c4c8"/>
+  <circle cx="95" cy="77" r="3.2" fill="#35c4c8"/>   <!-- スピンドル穴 -->
+
+  <text x="95" y="138" text-anchor="middle" fill="#0a2540"
+        font-family="Hiragino Sans, Hiragino Kaku Gothic ProN, Noto Sans JP, sans-serif"
+        font-size="23" font-weight="700">今すぐ聴く</text>
+
+  <text x="95" y="157" text-anchor="middle" fill="#0a2540"
+        font-family="Arial, Helvetica, sans-serif"
+        font-size="10" font-weight="700" letter-spacing="2" opacity="0.75">LISTEN NOW</text>
+</svg>

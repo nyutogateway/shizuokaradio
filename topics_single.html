@@ -8,7 +8,7 @@
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=M+PLUS+1:wght@100..900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
 
 <!-- Vendor CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
@@ -25,13 +25,13 @@
 <!-- ===================== HEADER: PC ===================== -->
 <nav id="header-pc" class="d-lg-block d-none header-pc">
   <div class="container-fluid">
-    <div class="d-flex justify-content-center align-items-start">
+    <div class="d-flex justify-content-center align-items-center">
       <ul class="menu menu--left list-style-none mb-0 d-flex align-items-center justify-content-end">
         <li><a href="topics.html"><span>NEWS</span>お知らせ</a></li>
         <li><a href="program_list.html"><span>PROGRAM</span>番組一覧</a></li>
       </ul>
       <a href="index.html" id="header-pc-logo" data-home>
-        <img src="assets/img/logo.svg" alt="SHIZUOKA OCEANS RADIO">
+        <img src="assets/img/home/SHIZUOKA-OCEANS-RADIO-1a-dark.svg" alt="SHIZUOKA OCEANS RADIO">
       </a>
       <ul class="menu menu--right list-style-none mb-0 d-flex align-items-center justify-content-start">
         <li><a href="personality_list.html"><span>PERSONALITY</span>パーソナリティー</a></li>
@@ -50,7 +50,7 @@
         <li><a href="program_list.html"><span>PROGRAM</span>番組一覧</a></li>
       </ul>
       <a href="index.html" id="header-sticky-logo">
-        <img src="assets/img/logo.svg" alt="SHIZUOKA OCEANS RADIO">
+        <img src="assets/img/home/SHIZUOKA-OCEANS-RADIO-1a-dark.svg" alt="SHIZUOKA OCEANS RADIO">
       </a>
       <ul class="menu menu--right list-style-none mb-0 d-flex align-items-center justify-content-start">
         <li><a href="personality_list.html"><span>PERSONALITY</span>パーソナリティー</a></li>
@@ -64,7 +64,7 @@
 <nav id="header-sp" class="d-lg-none d-block text-center">
   <div class="container-fluid">
     <a href="index.html" id="header-sp-logo" class="d-inline-block">
-      <img src="assets/img/logo.svg" alt="SHIZUOKA OCEANS RADIO">
+      <img src="assets/img/home/SHIZUOKA-OCEANS-RADIO-1a-dark.svg" alt="SHIZUOKA OCEANS RADIO">
     </a>
   </div>
 </nav>
@@ -96,7 +96,7 @@
     <div class="container">
       <div class="d-flex align-items-center justify-content-between">
         <h1 class="pages-header__title"><span>NEWS</span>お知らせ</h1>
-        <img src="assets/img/common/character1.svg" alt="" class="pages-header__img">
+        <img src="assets/img/surfer.png" alt="" class="pages-header__img">
       </div>
     </div>
   </div>
@@ -141,10 +141,10 @@
 </main>
 
 <!-- ===================== FOOTER ===================== -->
-<footer id="footer" class="bg-black py-lg">
+<footer id="footer" class="py-lg">
   <div class="container text-center">
     <a href="index.html" id="footer-logo" class="d-inline-block mb-4">
-      <img src="assets/img/logo.svg" alt="ロゴ">
+      <img src="assets/img/home/SHIZUOKA-OCEANS-RADIO-1a-dark.svg" alt="SHIZUOKA OCEANS RADIO">
     </a>
     <p class="mb-4">SHIZUOKA OCEANS RADIO<br>〒890-0082 鹿児島市紫原6-17-3<br>TEL：099-214-3777 / FAX：099-214-3567</p>
     <ul id="footer-menu" class="list-style-none d-flex flex-wrap justify-content-center mb-4">
@@ -163,8 +163,8 @@
 </footer>
 
 <!-- 固定ボタン -->
-<a href="#" id="footer-jwave"><img src="assets/img/common/sticker-jwave.svg" alt="J-WAVE ONAIR SONGS"></a>
-<a href="#" id="footer-listen"><img src="assets/img/common/icon-listen.svg" alt="今すぐ聴く"></a>
+<a href="https://open.spotify.com/" target="_blank" rel="noopener" id="footer-spotify"><span class="ttl"><i class="fa-brands fa-spotify"></i>SPOTIFY</span><span class="sub">ON AIR SONGS</span></a>
+<a href="#" id="footer-listen"><img src="assets/img/common/sticker-listen.svg" alt="今すぐ聴く"></a>
 
 <!-- ===================== JS ===================== -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
@@ -217,10 +217,14 @@ $(window).on("scroll", function(){
   q('ts-title').textContent = a.title;
   q('ts-body').innerHTML = a.body.map(function(par){ return '<p class="f-14 mb-4">' + esc(par) + '</p>'; }).join('');
 
+  q('ts-thumb').src = 'assets/img/photos/news' + a.id + '_lg.jpg';
+
   q('ts-prev').href = 'topics_single.html?id=' + prev.id;
   q('ts-prev-title').textContent = prev.title;
+  document.querySelector('#ts-prev .wrap__thumb__img').src = 'assets/img/photos/news' + prev.id + '.jpg';
   q('ts-next').href = 'topics_single.html?id=' + next.id;
   q('ts-next-title').textContent = next.title;
+  document.querySelector('#ts-next .wrap__thumb__img').src = 'assets/img/photos/news' + next.id + '.jpg';
 })();
 </script>
 </body>
