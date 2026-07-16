@@ -85,7 +85,7 @@ $uri = get_template_directory_uri();
     <h2 class="home-sc__title mb-5"><span>PERSONALITY</span>パーソナリティー</h2>
     <div id="home-personality-slider" class="home-slider">
       <?php
-      $per = new WP_Query( array( 'post_type' => 'personality', 'posts_per_page' => 12 ) );
+      $per = new WP_Query( sor_personality_query_args( array( 'posts_per_page' => 12 ) ) );
       while ( $per->have_posts() ) : $per->the_post(); ?>
         <div class="px-2">
           <a href="<?php the_permalink(); ?>" class="personality-post">

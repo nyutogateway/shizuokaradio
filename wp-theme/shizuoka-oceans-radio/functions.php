@@ -379,6 +379,86 @@ function sor_thumbnail( $size = 'sor-card', $alt = '' ) {
 }
 
 /**
+ * パーソナリティーの追加項目（ふりがな・英字名・出演曜日）の入力欄
+ *
+ * ACFを入れなくても編集できるよう、テーマ側で最小限のメタボックスを持つ。
+ * ふりがなは表示だけでなく、一覧の五十音順ソートにも使う。
+ */
+function sor_personality_metabox() {
+	add_meta_box(
+		'sor_personality_fields',
+		__( 'パーソナリティー情報', 'sor' ),
+		'sor_personality_metabox_html',
+		'personality',
+		'normal',
+		'high'
+	);
+}
+add_action( 'add_meta_boxes', 'sor_personality_metabox' );
+
+function sor_personality_metabox_html( $post ) {
+	wp_nonce_field( 'sor_personality_save', 'sor_personality_nonce' );
+	$fields = array(
+		'sor_name_kana' => array( 'ふりがな', 'さとう みさき', 'ひらがなで入力。一覧の並び順（五十音順）に使われます。' ),
+		'sor_name_en'   => array( '英字名', 'Misaki Sato', '氏名の下に小さく表示されます。' ),
+		'sor_days'      => array( '出演曜日', '火曜, 木曜', 'カンマ区切り。詳細ページにタグとして表示されます。' ),
+	);
+	echo '<table class="form-table">';
+	foreach ( $fields as $key => $f ) {
+		printf(
+			'<tr><th><label for="%1$s">%2$s</label></th><td><input type="text" id="%1$s" name="%1$s" value="%3$s" class="regular-text" placeholder="%4$s"><p class="description">%5$s</p></td></tr>',
+			esc_attr( $key ),
+			esc_html( $f[0] ),
+			esc_attr( get_post_meta( $post->ID, $key, true ) ),
+			esc_attr( $f[1] ),
+			esc_html( $f[2] )
+		);
+	}
+	echo '</table>';
+}
+
+function sor_personality_save( $post_id ) {
+	if ( ! isset( $_POST['sor_personality_nonce'] ) ||
+		! wp_verify_nonce( sanitize_key( $_POST['sor_personality_nonce'] ), 'sor_personality_save' ) ) {
+		return;
+	}
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+	foreach ( array( 'sor_name_kana', 'sor_name_en', 'sor_days' ) as $key ) {
+		if ( isset( $_POST[ $key ] ) ) {
+			update_post_meta( $post_id, $key, sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) );
+		}
+	}
+}
+add_action( 'save_post_personality', 'sor_personality_save' );
+
+/**
+ * パーソナリティーをふりがなの五十音順で取得する WP_Query 引数を返す
+ *
+ * タイトル順だと日本語は文字コード順になり、読みの順にならないため
+ * ふりがな（sor_name_kana）で並べる。
+ *
+ * 注意：meta_key を指定するだけだと INNER JOIN になり、
+ * ふりがな未入力のパーソナリティーが一覧から丸ごと消える。
+ * EXISTS / NOT EXISTS の OR で結合し、未入力でも必ず表示されるようにしている。
+ */
+function sor_personality_query_args( $extra = array() ) {
+	return array_merge( array(
+		'post_type'  => 'personality',
+		'meta_query' => array(
+			'relation' => 'OR',
+			'kana'     => array( 'key' => 'sor_name_kana', 'compare' => 'EXISTS' ),
+			'no_kana'  => array( 'key' => 'sor_name_kana', 'compare' => 'NOT EXISTS' ),
+		),
+		'orderby'    => array( 'kana' => 'ASC', 'title' => 'ASC' ),
+	), $extra );
+}
+
+/**
  * Contact Form 7：リクエストフォームの「番組を選択」を番組CPTから動的に生成する
  *
  * CF7側は選択肢を空にした [select program] を置くだけでよい。

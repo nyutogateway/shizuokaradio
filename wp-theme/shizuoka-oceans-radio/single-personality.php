@@ -9,6 +9,7 @@ get_header(); ?>
   <div class="pages-body py-md">
     <div class="container">
       <?php while ( have_posts() ) : the_post();
+        $kana = get_post_meta( get_the_ID(), 'sor_name_kana', true );
         $en = get_post_meta( get_the_ID(), 'sor_name_en', true );
         $days = get_post_meta( get_the_ID(), 'sor_days', true );
       ?>
@@ -17,8 +18,9 @@ get_header(); ?>
           <div class="personality-post__thumb"><?php sor_thumbnail( 'sor-square', get_the_title() ); ?></div>
         </div>
         <div class="col-md-7 mb-4">
-          <?php if ( $en ) : ?><p class="primary-en allcap f-med personality-post__en mb-1"><?php echo esc_html( $en ); ?></p><?php endif; ?>
-          <h1 class="h-36 f-bold mb-4"><?php the_title(); ?></h1>
+          <?php if ( $kana ) : ?><p class="f-14 mb-1 personality-post__kana"><?php echo esc_html( $kana ); ?></p><?php endif; ?>
+          <h1 class="h-36 f-bold mb-2"><?php the_title(); ?></h1>
+          <?php if ( $en ) : ?><p class="primary-en allcap f-med personality-post__en mb-4"><?php echo esc_html( $en ); ?></p><?php endif; ?>
           <?php if ( $days ) : ?>
             <ul class="list-style-none d-flex flex-wrap mb-4 program-tag">
               <?php foreach ( array_map( 'trim', explode( ',', $days ) ) as $d ) : ?><li><?php echo esc_html( $d ); ?></li><?php endforeach; ?>
