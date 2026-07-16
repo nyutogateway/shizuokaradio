@@ -4,6 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>遠藤 陽子 - パーソナリティー - SHIZUOKA OCEANS RADIO</title>
+<meta name="description" content="SHIZUOKA OCEANS RADIOのパーソナリティー紹介。プロフィールと担当番組をご覧いただけます。">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://nyutogateway.github.io/shizuokaradio/personality_single.html">
+
+<!-- OGP -->
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="SHIZUOKA OCEANS RADIO">
+<meta property="og:title" content="遠藤 陽子 - パーソナリティー - SHIZUOKA OCEANS RADIO">
+<meta property="og:description" content="SHIZUOKA OCEANS RADIOのパーソナリティー紹介。プロフィールと担当番組をご覧いただけます。">
+<meta property="og:url" content="https://nyutogateway.github.io/shizuokaradio/personality_single.html">
+<meta property="og:image" content="https://nyutogateway.github.io/shizuokaradio/assets/img/home/SHIZUOKA-OCEANS-RADIO-1a-dark.svg">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="遠藤 陽子 - パーソナリティー - SHIZUOKA OCEANS RADIO">
+<meta name="twitter:description" content="SHIZUOKA OCEANS RADIOのパーソナリティー紹介。プロフィールと担当番組をご覧いただけます。">
+<meta name="twitter:image" content="https://nyutogateway.github.io/shizuokaradio/assets/img/home/SHIZUOKA-OCEANS-RADIO-1a-dark.svg">
+
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -96,7 +113,7 @@
     <div class="container">
       <div class="d-flex align-items-center justify-content-between">
         <h1 class="pages-header__title"><span>PERSONALITY</span>パーソナリティー</h1>
-        <img src="assets/img/surfer.png" alt="" class="pages-header__img">
+        <img src="assets/img/surfer.png" alt="サーフィンをするSHIZUOKA OCEANS RADIOのキャラクター" class="pages-header__img">
       </div>
     </div>
   </div>
@@ -182,7 +199,7 @@
 </footer>
 
 <!-- 固定ボタン -->
-<a href="https://open.spotify.com/" target="_blank" rel="noopener" id="footer-spotify"><span class="ttl"><i class="fa-brands fa-spotify"></i>SPOTIFY</span><span class="sub">ON AIR SONGS</span></a>
+<a href="https://open.spotify.com/" target="_blank" rel="noopener" id="footer-spotify"><img src="assets/img/common/sticker-spotify.svg" alt="SPOTIFY ON AIR SONGS"></a>
 <a href="#" id="footer-listen"><img src="assets/img/common/sticker-listen.svg" alt="今すぐ聴く"></a>
 
 <!-- ===================== JS ===================== -->
@@ -241,7 +258,7 @@ $(window).on("scroll", function(){
 
   q('ps-programs').innerHTML = p.programs.map(function(pr){
     return '<div class="col-md-4 col-6 mb-4"><a href="program_list.html" class="program-post">'
-         +   '<div class="program-post__thumb"><img src="'+THUMB16+'" alt=""></div>'
+         +   '<div class="program-post__thumb"><img src="'+THUMB16+'" alt="'+esc(pr.title)+'"></div>'
          +   '<ul class="list-style-none mb-0 mt-2 d-flex flex-wrap program-tag"><li>'+esc(pr.d)+'</li><li>'+esc(pr.t)+'</li></ul>'
          +   '<p class="h-18 f-bold mt-2 mb-2">'+esc(pr.title)+'</p>'
          +   '<p class="f-14">'+esc(p.jp)+'</p>'

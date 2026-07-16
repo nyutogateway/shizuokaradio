@@ -1,0 +1,16 @@
+/*
+Theme Name: SHIZUOKA OCEANS RADIO
+Theme URI: https://nyutogateway.github.io/shizuokaradio/
+Author: N-Bridge
+Description: 静岡のインターネットラジオ局 SHIZUOKA OCEANS RADIO のオリジナルテーマ。濃紺(#0a2540)＋アクア(#35c4c8)のブランドカラー、Inter + Noto Sans JP のフォント構成。
+Version: 1.0.0
+Requires at least: 6.0
+Requires PHP: 7.4
+License: GNU General Public License v2 or later
+Text Domain: sor
+*/
+
+/*
+  実スタイルは assets/css/custom.css に集約している（functions.php で読み込み）。
+  このファイルはテーマ情報の宣言用。WordPress はテーマ判別にこのヘッダーを必要とする。
+*/

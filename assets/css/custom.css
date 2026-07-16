@@ -117,8 +117,13 @@ a{ color:var(--blue); }
 /* ヒーローのサーファー画像を拡大（325→380px）。
    後方の非メディア指定は既存のメディアクエリ(260/220px)にも勝ってしまうため、各段を比率維持で再指定 */
 #home-hero-mainvisual__img{
-  width:440px;
+  width:520px;
   align-self:flex-start;   /* 親は align-items-end（下寄せ）。サーファーだけ上寄せにする */
+}
+/* カードの max-width は元テーマのサーファー325px前提（100% - 360px）のままで、
+   拡大後の幅に足りていなかったため連動して更新（520 + margin-right 35 = 555） */
+@media screen and (min-width:1201px){
+  #home-hero-nowonair{ max-width:calc(100% - 570px); }
 }
 /* 下寄せにしてもカードが35px浮くため解除（元テーマの margin-bottom:35px が効いていた） */
 #home-hero-nowonair{ margin-bottom:0; }
@@ -127,6 +132,11 @@ a{ color:var(--blue); }
 #home-hero-mainvisual__inner{ padding-top:0; padding-bottom:40px; }
 @media screen and (max-width:767px){
   #home-hero-mainvisual__inner{ padding-bottom:24px; }
+}
+/* サーファー自身(高さ約407px)が高さを決めていて上寄せの余地が無かったため、縦幅を確保する。
+   横並び(d-lg-flex)になる992px以上でのみ適用 */
+@media screen and (min-width:992px){
+  #home-hero-mainvisual__inner{ min-height:560px; }
 }
 @media screen and (max-width:1200px){
   #home-hero-mainvisual__img{ width:300px; }
@@ -150,6 +160,12 @@ a:hover{ color:#0e7d81; }
 /* 下層ページの見出し（PERSONALITY / NEWS / PROGRAM ほか共通）を白文字に
    ※指定が無くブラウザ既定の純黒になっていた */
 .pages-header__title{ color:#fff; }
+
+/* 元テーマは padding-top:20px のみで下の余白が0のため、サーファーが帯の下端に接していた */
+.pages-header{ padding-bottom:20px; }
+@media screen and (max-width:767px){
+  .pages-header{ padding-bottom:14px; }
+}
 
 /* ----- 下層ページヘッダーの画像 -----
    旧 character1.svg は SVG に固有幅(199x257)を持っていたため元テーマはPC用の幅を指定していない
@@ -177,35 +193,23 @@ a:hover{ color:#0e7d81; }
 
 /* ===== 固定ステッカー：J-WAVE → Spotify =====
    IDを footer-jwave から変更したため、元テーマの固定位置指定を引き継いで再定義 */
-#footer-spotify{
-  position:fixed; right:15px; bottom:210px; z-index:9;
-  width:150px; padding:11px 10px;
-  background-color:#0a2540; border-radius:10px;
-  display:flex; flex-direction:column; align-items:center; gap:3px;
-  text-decoration:none; line-height:1;
-}
-/* 1行目：アイコン＋SPOTIFY を横並び */
-#footer-spotify .ttl{
-  display:flex; align-items:center; gap:6px;
-  color:#fff; font-size:15px; font-weight:700; letter-spacing:.06em;
-  font-family:"Inter",sans-serif;
-}
-#footer-spotify .ttl i{ font-size:19px; color:#1DB954; }   /* Spotify公式のブランドグリーン */
-/* 2行目 */
-#footer-spotify .sub{ color:#fff; font-size:9px; font-weight:700; letter-spacing:.04em; opacity:.8; }
-#footer-spotify:hover{ background-color:#1DB954; }
-#footer-spotify:hover .ttl i{ color:#fff; }
+/* 固定ボタン：Spotify は横長ピル、今すぐ聴くは円形。縦2段で重ならないよう配置。
+   円形時より縦を取らないため、下端から詰めて置ける */
+#footer-spotify{ position:fixed; right:15px; bottom:182px; z-index:9; }
+#footer-spotify img{ width:210px; display:block; transition:.3s; }
+#footer-spotify:hover img{ transform:scale(1.04); }
 @media screen and (max-width:767px){
-  #footer-spotify{ right:10px; bottom:137px; width:128px; padding:9px 8px; }
-  #footer-spotify .ttl{ font-size:13px; }
-  #footer-spotify .ttl i{ font-size:17px; }
+  #footer-spotify{ right:10px; bottom:144px; }
+  #footer-spotify img{ width:168px; }
 }
 
-/* 固定ステッカー：今すぐ聴く（旧フレンズFMのイラスト → ブランド配色の新ステッカー画像） */
-#footer-listen img{ width:132px; display:block; transition:.3s; }
-#footer-listen:hover img{ transform:scale(1.06); }
+/* 固定ボタン：今すぐ聴く（横長ピル）。Spotifyの下段に置く */
+#footer-listen{ bottom:12px; }
+#footer-listen img{ width:160px; display:block; transition:.3s; }
+#footer-listen:hover img{ transform:scale(1.04); }
 @media screen and (max-width:767px){
-  #footer-listen img{ width:104px; }
+  #footer-listen{ bottom:10px; }
+  #footer-listen img{ width:124px; }
 }
 
 /* ----- フッター -----
