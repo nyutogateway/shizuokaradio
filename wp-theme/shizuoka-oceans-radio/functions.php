@@ -385,26 +385,34 @@ function sor_thumbnail( $size = 'sor-card', $alt = '' ) {
  * 番組が増減しても、フォーム定義を編集する必要がなくなる。
  */
 function sor_cf7_program_options( $tag ) {
-	if ( empty( $tag['name'] ) || 'program' !== $tag['name'] ) {
+	if ( ! class_exists( 'WPCF7_FormTag' ) ) {
 		return $tag;
 	}
+	$tag = new WPCF7_FormTag( $tag );
+
+	if ( 'program' !== $tag->name ) {
+		return $tag;
+	}
+
 	$programs = get_posts( array(
 		'post_type'   => 'program',
 		'numberposts' => 100,
 		'orderby'     => 'title',
 		'order'       => 'ASC',
 	) );
-	if ( ! $programs ) {
-		return $tag;
-	}
+
+	$options = array();
 	foreach ( $programs as $p ) {
-		$tag['raw_values'][] = $p->post_title;
-		$tag['values'][]     = $p->post_title;
-		$tag['labels'][]     = $p->post_title;
+		$options[] = $p->post_title;
 	}
-	$tag['raw_values'][] = 'その他';
-	$tag['values'][]     = 'その他';
-	$tag['labels'][]     = 'その他';
+	$options[] = 'その他';
+
+	// $tag は WPCF7_FormTag オブジェクト（ArrayAccess）。
+	// $tag['values'][] = ... は offsetGet がコピーを返すため追記が効かない。
+	// 必ずプロパティに配列ごと代入すること。
+	$tag->raw_values = $options;
+	$tag->values     = $options;
+	$tag->labels     = $options;
 
 	return $tag;
 }

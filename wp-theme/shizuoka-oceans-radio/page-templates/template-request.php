@@ -60,18 +60,22 @@ get_header(); ?>
           </div>
           <div class="form-group">
             <label class="label">番組を選択<span class="label__required">必須</span></label>
+            <?php
+            // 番組はCPTから取得する（静的HTMLでは番組名が直書きだった）
+            $programs = get_posts( array( 'post_type' => 'program', 'numberposts' => 50, 'orderby' => 'title', 'order' => 'ASC' ) );
+            ?>
             <select class="form-select mt-3" disabled>
-              <?php
-              // 番組はCPTから取得する（静的HTMLでは番組名が直書きだった）
-              $programs = get_posts( array( 'post_type' => 'program', 'numberposts' => 50, 'orderby' => 'title', 'order' => 'ASC' ) );
-              if ( $programs ) {
-                foreach ( $programs as $p ) {
-                  echo '<option>' . esc_html( $p->post_title ) . '</option>';
-                }
-              }
-              ?>
+              <?php foreach ( $programs as $p ) : ?>
+                <option><?php echo esc_html( $p->post_title ); ?></option>
+              <?php endforeach; ?>
               <option>その他</option>
             </select>
+            <?php if ( ! $programs && current_user_can( 'edit_posts' ) ) : ?>
+              <p class="f-14 mt-2" style="color:#d30101">
+                ※編集者にのみ表示：公開済みの「番組」が0件のため、選択肢が「その他」だけになっています。
+                管理画面の「番組」で追加し、<strong>下書きではなく公開</strong>してください。
+              </p>
+            <?php endif; ?>
           </div>
           <div class="form-group">
             <label class="label">メッセージ</label>
